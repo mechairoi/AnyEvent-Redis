@@ -35,6 +35,13 @@ test_redis {
         $r->blpop('a' .. 'z', 1)->recv;
       } "blpop";
 
+      no_leaks_ok {
+        my $redis = AnyEvent::Redis->new(host => "127.0.0.1", port => Test::TCP::empty_port());
+        my $cv = $redis->set("foo", "bar");
+        eval { $cv->recv; };
+        ok $@, "got exception from error";
+      };
+
       $r->all_cv->end;
       $r->all_cv->recv;
       done_testing;

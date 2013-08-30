@@ -148,8 +148,9 @@ sub connect {
             # $self is weakened to avoid leaks, hold on to a strong copy
             # controlled via a CV.
             my $cmd_cv = AE::cv;
+            my $strong_self = $self;
             $cmd_cv->cb(sub {
-                my $strong_self = $self;
+                undef $strong_self;
               });
 
             # pubsub is very different - get it out of the way first
